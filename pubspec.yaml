@@ -1,0 +1,25 @@
+name: pingwindot_notifications
+description: Native Android notification service for PingWinDot — shows FCM signals with a single confirm action button in the system tray and sends acknowledgement to Supabase RPC without launching a Flutter isolate.
+version: 0.1.0
+homepage: https://github.com/DMondi/pingwindot_notifications
+repository: https://github.com/DMondi/pingwindot_notifications
+issue_tracker: https://github.com/DMondi/pingwindot_notifications/issues
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: dev.pingwindot.notifications
+        pluginClass: PingwindotNotificationsPlugin

@@ -1,0 +1,21 @@
+# Build outputs
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+.packages
+pubspec.lock
+
+# Android
+android/.gradle/
+android/local.properties
+android/captures/
+android/.idea/
+android/*.iml
+
+# IDE
+.idea/
+.vscode/
+*.iml

@@ -1,0 +1,26 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Перехоплює FCM data-only payload, будує сповіщення з кнопкою + -->
+        <service
+            android:name="dev.pingwindot.notifications.PingWinFcmService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Обробляє тап по кнопці + у шторці -->
+        <receiver
+            android:name="dev.pingwindot.notifications.NotificationActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="dev.pingwindot.notifications.ACTION_CONFIRM" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Дефолтний канал для FCM-сповіщень -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="pingwin_signals" />
+    </application>
+</manifest>
