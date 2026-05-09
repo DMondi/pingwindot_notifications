@@ -20,8 +20,8 @@ import com.google.firebase.messaging.RemoteMessage
  * Expected FCM `data` fields:
  *   notification_id   string  unique id, used as Android notification id
  *                             (via hashCode) and for dedup
- *   recipient_id      string  notification_recipients row id, passed as
- *                             `p_id` to the Supabase RPC
+ *   descriptor        string  notification_recipients.descriptor (unique),
+ *                             passed as `p_descriptor` to the Supabase RPC
  *   title             string  notification title
  *   body              string  notification body
  *
@@ -36,7 +36,7 @@ class PingWinFcmService : FirebaseMessagingService() {
 
         val data = message.data
         val notificationId = data["notification_id"] ?: return
-        val recipientId = data["recipient_id"] ?: return
+        val descriptor = data["descriptor"] ?: return
         val title = data["title"] ?: "PingWinDot"
         val body = data["body"] ?: ""
 
@@ -47,7 +47,7 @@ class PingWinFcmService : FirebaseMessagingService() {
         val confirmIntent = Intent(this, NotificationActionReceiver::class.java).apply {
             action = NotificationActionReceiver.ACTION_CONFIRM
             putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, notificationId)
-            putExtra(NotificationActionReceiver.EXTRA_RECIPIENT_ID, recipientId)
+            putExtra(NotificationActionReceiver.EXTRA_DESCRIPTOR, descriptor)
             putExtra(NotificationActionReceiver.EXTRA_ANDROID_NOTIF_ID, androidNotifId)
             putExtra(NotificationActionReceiver.EXTRA_TITLE, title)
             putExtra(NotificationActionReceiver.EXTRA_BODY, body)
@@ -62,7 +62,7 @@ class PingWinFcmService : FirebaseMessagingService() {
 
         val tapIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
             putExtra("notification_id", notificationId)
-            putExtra("recipient_id", recipientId)
+            putExtra("descriptor", descriptor)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val tapPendingIntent = if (tapIntent != null) {

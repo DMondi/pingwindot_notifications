@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0
+
+* **Breaking:** FCM data payload now expects field `descriptor` instead of
+  `recipient_id`. Edge function on the host side must include
+  `descriptor` (the unique `notification_recipients.descriptor` value)
+  rather than the row id.
+* **Breaking:** RPC call now passes `p_descriptor` instead of `p_id`. The
+  host's Supabase RPC `confirm_notification_status` must accept a
+  `p_descriptor text` parameter and look up the row by descriptor (which
+  is `UNIQUE` in the schema and equals `<notification_id>-<munit_id>`).
+* No edge-function lookup is required to find the descriptor — it can be
+  constructed deterministically from `notification_id` and `munit_id`,
+  although hosts may keep the lookup as a sanity check.
+
 ## 0.1.0
 
 * Initial release.

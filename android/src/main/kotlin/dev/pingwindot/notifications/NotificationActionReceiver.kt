@@ -30,7 +30,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         if (intent.action != ACTION_CONFIRM) return
 
         val notificationId = intent.getStringExtra(EXTRA_NOTIFICATION_ID) ?: return
-        val recipientId = intent.getStringExtra(EXTRA_RECIPIENT_ID) ?: return
+        val descriptor = intent.getStringExtra(EXTRA_DESCRIPTOR) ?: return
         val androidNotifId = intent.getIntExtra(EXTRA_ANDROID_NOTIF_ID, notificationId.hashCode())
         val title = intent.getStringExtra(EXTRA_TITLE) ?: "PingWinDot"
         val body = intent.getStringExtra(EXTRA_BODY) ?: ""
@@ -40,15 +40,15 @@ class NotificationActionReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         thread(start = true, name = "PingWinConfirm-$notificationId") {
             try {
-                val ok = performConfirm(context, recipientId)
+                val ok = performConfirm(context, descriptor)
                 if (ok) {
                     showSuccess(context, androidNotifId, title)
                 } else {
-                    openAppForFallback(context, notificationId, recipientId)
+                    openAppForFallback(context, notificationId, descriptor)
                     cancel(context, androidNotifId)
                 }
             } catch (e: Exception) {
-                openAppForFallback(context, notificationId, recipientId)
+                openAppForFallback(context, notificationId, descriptor)
                 cancel(context, androidNotifId)
             } finally {
                 pendingResult.finish()
@@ -56,16 +56,16 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun performConfirm(context: Context, recipientId: String): Boolean {
+    private fun performConfirm(context: Context, descriptor: String): Boolean {
         val config = SupabaseAuthHelper.readConfig(context) ?: return false
         var session = SupabaseAuthHelper.readSession(context) ?: return false
 
-        var status = callRpc(config, session.accessToken, recipientId)
+        var status = callRpc(config, session.accessToken, descriptor)
         if (status == 401) {
             val refreshed = SupabaseAuthHelper.refresh(context, config, session.refreshToken)
                 ?: return false
             session = refreshed
-            status = callRpc(config, session.accessToken, recipientId)
+            status = callRpc(config, session.accessToken, descriptor)
         }
         return status in 200..299
     }
@@ -73,7 +73,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
     private fun callRpc(
         config: SupabaseAuthHelper.Config,
         accessToken: String,
-        recipientId: String,
+        descriptor: String,
     ): Int {
         return try {
             val url = URL("${config.supabaseUrl}/rest/v1/rpc/confirm_notification_status")
@@ -87,7 +87,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 setRequestProperty("Authorization", "Bearer $accessToken")
                 setRequestProperty("Prefer", "return=minimal")
             }
-            val body = JSONObject().apply { put("p_id", recipientId) }.toString()
+            val body = JSONObject().apply { put("p_descriptor", descriptor) }.toString()
             conn.outputStream.use { it.write(body.toByteArray(Charsets.UTF_8)) }
             val code = conn.responseCode
             try {
@@ -138,13 +138,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
     private fun openAppForFallback(
         context: Context,
         notificationId: String,
-        recipientId: String,
+        descriptor: String,
     ) {
         val launch = context.packageManager.getLaunchIntentForPackage(context.packageName) ?: return
         launch.apply {
             putExtra("pending_action", "confirm_notification")
             putExtra("notification_id", notificationId)
-            putExtra("recipient_id", recipientId)
+            putExtra("descriptor", descriptor)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         try {
@@ -164,7 +164,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_CONFIRM = "dev.pingwindot.notifications.ACTION_CONFIRM"
         const val EXTRA_NOTIFICATION_ID = "notification_id"
-        const val EXTRA_RECIPIENT_ID = "recipient_id"
+        const val EXTRA_DESCRIPTOR = "descriptor"
         const val EXTRA_ANDROID_NOTIF_ID = "android_notif_id"
         const val EXTRA_TITLE = "title"
         const val EXTRA_BODY = "body"
