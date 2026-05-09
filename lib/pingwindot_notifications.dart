@@ -21,4 +21,4 @@ library pingwindot_notifications;
 
 /// Plugin version string. Useful for diagnostics if the host app wants to
 /// log which plugin build it is shipping with.
-const String pingwindotNotificationsVersion = '0.2.0';
+const String pingwindotNotificationsVersion = '0.3.0';

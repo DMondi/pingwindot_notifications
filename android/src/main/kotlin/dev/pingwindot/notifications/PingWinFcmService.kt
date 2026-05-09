@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -76,6 +77,7 @@ class PingWinFcmService : FirebaseMessagingService() {
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(applicationInfo.icon)
+            .setColor(ACCENT_COLOR)
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
@@ -84,7 +86,7 @@ class PingWinFcmService : FirebaseMessagingService() {
             .setAutoCancel(false)
             .addAction(
                 android.R.drawable.ic_input_add,
-                "+",
+                "Прийняв +",
                 confirmPendingIntent,
             )
             .also { if (tapPendingIntent != null) it.setContentIntent(tapPendingIntent) }
@@ -106,7 +108,11 @@ class PingWinFcmService : FirebaseMessagingService() {
 
     companion object {
         const val CHANNEL_ID = "pingwin_signals"
-        const val CHANNEL_NAME = "PingWin Signals"
+        const val CHANNEL_NAME = "Сигнали PingWin"
+
+        /** Brand accent #3498DB — used by setColor() for small icon tint and
+         *  Material You action-button text colorization. */
+        val ACCENT_COLOR: Int = Color.parseColor("#3498DB")
 
         fun ensureChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -117,7 +123,7 @@ class PingWinFcmService : FirebaseMessagingService() {
                         CHANNEL_NAME,
                         NotificationManager.IMPORTANCE_HIGH,
                     ).apply {
-                        description = "PingWin signals with quick-confirm action"
+                        description = "Сигнали PingWin із кнопкою швидкої доповіді"
                         enableVibration(true)
                     }
                     nm.createNotificationChannel(channel)

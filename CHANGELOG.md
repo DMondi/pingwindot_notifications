@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0
+
+* Localised all user-facing strings to Ukrainian (the plugin is purpose-built
+  for the PingWinDot signal app, which is Ukrainian-only):
+  * Action button label: "+" → "Прийняв +"
+  * Progress subtext: "Sending acknowledgement…" → "Надсилаємо доповідь…"
+  * Success body: "Acknowledgement received ✓" → "Доповідь прийнято ✓"
+  * Channel name: "PingWin Signals" → "Сигнали PingWin"
+  * Channel description updated accordingly.
+* Added brand accent colour `#3498DB` via `setColor()` on all three
+  notification states (initial, progress, success). On Material You
+  (Android 12+) this colourises the action button text; on older versions
+  it tints the small icon.
+* No payload / RPC contract changes — drop-in compatible with 0.2.0 hosts.
+
 ## 0.2.0
 
 * **Breaking:** FCM data payload now expects field `descriptor` instead of
