@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application>
         <!-- Перехоплює FCM data-only payload, будує сповіщення з кнопкою + -->
         <service
@@ -21,6 +23,6 @@
         <!-- Дефолтний канал для FCM-сповіщень -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="pingwin_signals" />
+            android:value="pingwin_signals_v2" />
     </application>
 </manifest>

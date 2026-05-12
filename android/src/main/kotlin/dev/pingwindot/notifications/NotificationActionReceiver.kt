@@ -101,7 +101,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     private fun showProgress(context: Context, androidNotifId: Int, title: String, body: String) {
         PingWinFcmService.ensureChannel(context)
-        val builder = NotificationCompat.Builder(context, PingWinFcmService.CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context, PingWinFcmService.activeChannelId(context))
             .setSmallIcon(context.applicationInfo.icon)
             .setColor(PingWinFcmService.ACCENT_COLOR)
             .setContentTitle(title)
@@ -118,7 +118,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     private fun showSuccess(context: Context, androidNotifId: Int, title: String) {
         PingWinFcmService.ensureChannel(context)
-        val builder = NotificationCompat.Builder(context, PingWinFcmService.CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context, PingWinFcmService.activeChannelId(context))
             .setSmallIcon(context.applicationInfo.icon)
             .setColor(PingWinFcmService.ACCENT_COLOR)
             .setContentTitle(title)

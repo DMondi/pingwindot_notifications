@@ -1,12 +1,40 @@
 # Changelog
 
+## 0.4.0
+
+* **New: per-level sound on push receipt.** Bundles three notification sounds
+  in `android/src/main/res/raw/` (`pingwin_sound_default.mp3`,
+  `pingwin_sound_warning.wav`, `pingwin_sound_alarm.mp3`) and selects one
+  based on the new `sound_type` data field (`"0"`/`"1"`/`"2"`). Plays via
+  `MediaPlayer` with `USAGE_NOTIFICATION` from the FCM service, so it works
+  even when the app is killed.
+* **New: per-level vibration patterns.** `0` → short tick, `1` → double-tap,
+  `2` → long alarm × 3. Uses `VibrationEffect.createWaveform` on API 26+ with
+  legacy fallback.
+* **New: SharedPreferences-driven control.** Five keys (see
+  `PingwindotPrefs`): global sound/vibration switches plus per-level mute.
+  Defaults to legacy v0.3.0 behaviour (system sound on `pingwin_signals`
+  channel) until the host writes any notif-pref, then switches to the new
+  silent channel `pingwin_signals_v2` and drives sound/vibe natively.
+* **New: foreground dedup.** `PingwindotNotifications.setForegroundState(bool)`
+  flips a flag the FCM service reads to skip native sound/vibe when the
+  in-app Dart handler is active.
+* **New: Dart plugin API.** `PingwindotNotifications` class with
+  `setForegroundState`. The plugin is no longer Dart-API-less.
+* New manifest channel id: `pingwin_signals_v2` is now the
+  `default_notification_channel_id`. The legacy `pingwin_signals` channel
+  remains for the fallback path.
+* Manifest now declares `<uses-permission android:name="android.permission.VIBRATE"/>`.
+* No FCM payload contract change beyond the optional `sound_type` field.
+* Drop-in compatible with 0.3.0 hosts that don't write any notif-pref.
+
 ## 0.3.0
 
 * Localised all user-facing strings to Ukrainian (the plugin is purpose-built
   for the PingWinDot signal app, which is Ukrainian-only):
   * Action button label: "+" → "Прийняв +"
-  * Progress subtext: "Sending acknowledgement…" → "Надсилаємо доповідь…"
-  * Success body: "Acknowledgement received ✓" → "Доповідь прийнято ✓"
+  * Progress subtext: "Sending acknowledgement…" → "Надсилаємо …"
+  * Success body: "Acknowledgement received ✓" → "прийнято ✓"
   * Channel name: "PingWin Signals" → "Сигнали PingWin"
   * Channel description updated accordingly.
 * Added brand accent colour `#3498DB` via `setColor()` on all three
