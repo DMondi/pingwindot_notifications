@@ -30,7 +30,7 @@ library pingwindot_notifications;
 import 'package:flutter/services.dart';
 
 /// Plugin version string.
-const String pingwindotNotificationsVersion = '0.4.0';
+const String pingwindotNotificationsVersion = '0.4.1';
 
 /// Public API of the native plugin.
 class PingwindotNotifications {
@@ -54,22 +54,28 @@ class PingwindotNotifications {
   }
 }
 
-/// SharedPreferences keys read by the native side. Use the Flutter
-/// `shared_preferences` plugin and pass these (without the `flutter.` prefix
-/// the platform side adds — the Dart plugin handles that automatically).
+/// FlutterFlow App State field names that drive the plugin's sound and
+/// vibration behaviour. Add these as **Persisted Boolean** App State fields
+/// in FF — FF will write them to `FlutterSharedPreferences` under
+/// `flutter.ff_<fieldName>`, which the native side reads.
+///
+/// Defaults applied by the native side when a field is absent: `*Enabled`
+/// → true, `mute*` → false. Once any of them is written, custom-mode
+/// engages (silent channel + manual sound/vibe). Until then, the plugin
+/// falls back to the legacy `pingwin_signals` channel with system defaults.
 abstract final class PingwindotPrefs {
-  /// Bool. Master sound switch. Default true when any notif-pref is set.
-  static const String soundEnabled = 'pingwin.notif_sound_enabled';
+  /// Master sound switch. Add as `notifSoundEnabled` (bool, persisted, default true).
+  static const String soundEnabled = 'notifSoundEnabled';
 
-  /// Bool. Master vibration switch. Default true when any notif-pref is set.
-  static const String vibrationEnabled = 'pingwin.notif_vibration_enabled';
+  /// Master vibration switch. Add as `notifVibrationEnabled` (bool, persisted, default true).
+  static const String vibrationEnabled = 'notifVibrationEnabled';
 
-  /// Bool. Mute both sound and vibration for `sound_type == 0`.
-  static const String muteLevel0 = 'pingwin.notif_mute_level_0';
+  /// Mute both sound and vibration for `sound_type == 0`.
+  static const String muteLevel0 = 'notifMuteLevel0';
 
-  /// Bool. Mute both sound and vibration for `sound_type == 1`.
-  static const String muteLevel1 = 'pingwin.notif_mute_level_1';
+  /// Mute both sound and vibration for `sound_type == 1`.
+  static const String muteLevel1 = 'notifMuteLevel1';
 
-  /// Bool. Mute both sound and vibration for `sound_type == 2`.
-  static const String muteLevel2 = 'pingwin.notif_mute_level_2';
+  /// Mute both sound and vibration for `sound_type == 2`.
+  static const String muteLevel2 = 'notifMuteLevel2';
 }

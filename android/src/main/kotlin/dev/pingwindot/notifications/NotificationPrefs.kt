@@ -20,9 +20,13 @@ internal object NotificationPrefs {
 
     private const val PREFS = "FlutterSharedPreferences"
 
-    const val KEY_SOUND_ENABLED = "flutter.pingwin.notif_sound_enabled"
-    const val KEY_VIBRATION_ENABLED = "flutter.pingwin.notif_vibration_enabled"
-    const val KEY_MUTE_LEVEL_PREFIX = "flutter.pingwin.notif_mute_level_" // + 0/1/2
+    // FF persists App State fields under `flutter.ff_<fieldName>`. Host app
+    // declares Persisted Boolean fields with these names.
+    const val KEY_SOUND_ENABLED = "flutter.ff_notifSoundEnabled"
+    const val KEY_VIBRATION_ENABLED = "flutter.ff_notifVibrationEnabled"
+    const val KEY_MUTE_LEVEL_PREFIX = "flutter.ff_notifMuteLevel" // + 0/1/2
+
+    // Plugin-managed flag, not exposed via FF App State.
     const val KEY_FOREGROUND = "flutter.pingwin.app_in_foreground"
 
     private val ALL_NOTIF_KEYS = listOf(

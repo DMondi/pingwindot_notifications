@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.1
+
+* **Breaking pref-key rename** so the plugin can be driven directly by
+  FlutterFlow App State (Persisted Boolean) fields. Old keys
+  `pingwin.notif_*` are no longer read; new keys mirror the FF persistence
+  convention `flutter.ff_<fieldName>`:
+  * `notifSoundEnabled` (was `pingwin.notif_sound_enabled`)
+  * `notifVibrationEnabled` (was `pingwin.notif_vibration_enabled`)
+  * `notifMuteLevel0` / `notifMuteLevel1` / `notifMuteLevel2`
+    (was `pingwin.notif_mute_level_*`)
+* No-op for hosts that have not yet written any of these — the legacy
+  `pingwin_signals` fallback still kicks in, so 0.3.0-style behaviour is
+  preserved out of the box.
+* `app_in_foreground` flag remains under `flutter.pingwin.app_in_foreground`
+  (plugin-managed, not exposed via FF App State).
+
 ## 0.4.0
 
 * **New: per-level sound on push receipt.** Bundles three notification sounds
